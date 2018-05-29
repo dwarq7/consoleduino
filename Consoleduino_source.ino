@@ -19,6 +19,7 @@ void loop() {
 
 if(Serial.available() > 0) {
   String query = Serial.readString();
+  query.trim();
   if(query == "help"){helpmsg();}
   else if(query == "fetch"){fetchmsg();}
   else if(query == "pinctl"){f_pinctl();}
