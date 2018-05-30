@@ -3,6 +3,7 @@
 String BoardModel = " UNO";
 String Owner = " Ilya Bilyk";
 String AsciiArt = " duino ~>";
+String OwnerPasswd = "Illyusha2004";
 bool ledstatus = 0;
 
 void setup() {
@@ -24,6 +25,8 @@ if(Serial.available() > 0) {
   else if(query == "fetch"){fetchmsg();}
   else if(query == "pinctl"){f_pinctl();}
   else if(query == "hollywood"){hollywood();}
+  else if(query == "clear"){Serial.println();}//not working!!!
+  else if(query == "reboot"){}
   else{
   Serial.println(query+": no such command; try help");}
 
@@ -61,3 +64,31 @@ void hollywood(){
     
   }
 }
+
+/*
+bool permissionCheck(String fquery){
+  String passwdToCheck;
+  bool accept;
+  if (fquery == "reboot"){
+    Serial.print("Password for"+Owner+": ");
+    if(Serial.available() > 0){
+    passwdToCheck = Serial.readString();
+    accept = passwdCheck(passwdToCheck);}
+    if(accept == true) return true;
+    else return false;
+  }
+  }
+
+bool passwdCheck(String passwd) {
+  if (passwd == OwnerPasswd) return true;
+  else {Serial.println("wrong password");return false;}
+  } 
+
+void permissionRebootOutput(bool perm){
+  if (perm == true){
+    Serial.println("Rebooting...");
+    resetFunc();
+  }
+}
+*/
+
