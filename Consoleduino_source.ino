@@ -1,9 +1,9 @@
 #define ledctl 13
 
 String BoardModel = " UNO";
-String Owner = " Ilya Bilyk";
+String Owner = " Owner";
 String AsciiArt = " duino ~>";
-String OwnerPasswd = "Illyusha2004";
+String OwnerPasswd = "passwd";
 bool ledstatus = 0;
 
 void setup() {
