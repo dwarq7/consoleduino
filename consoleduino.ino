@@ -5,12 +5,13 @@ String Owner = " Owner";
 String AsciiArt = " duino ~>";
 String OwnerPasswd = "passwd";
 bool ledstatus = 0;
+bool asRoot = false;
 
 void setup() {
 pinMode(ledctl, OUTPUT); 
 
 Serial.begin(9600);
-Serial.println("Consoleduino v.0.1.1");
+Serial.println("Consoleduino v.1.3.1");
 Serial.println("(c) Ilya Bilyk 2018");
 Serial.println();
 }
@@ -23,10 +24,10 @@ if(Serial.available() > 0) {
   query.trim();
   if(query == "help"){helpmsg();}
   else if(query == "fetch"){fetchmsg();}
-  else if(query == "pinctl"){f_pinctl();}
+  else if(query == "pinctl" || query == "pinctl 1" || query == "pinctl 0"){f_pinctl(f_pinctlCheck(query));}
   else if(query == "hollywood"){hollywood();}
-  else if(query == "clear"){Serial.println();}//not working!!!
-  else if(query == "reboot"){}
+  else if(query == "su"){asRoot = permissionCheck();}
+  else if(query == "exit"){exitRoot(query);}
   else{
   Serial.println(query+": no such command; try help");}
 
@@ -37,7 +38,7 @@ void helpmsg(){
   Serial.println("Consoleduino help");
   Serial.println("help    print this msg");
   Serial.println("fetch   show system info");
-  Serial.println("pinctl    control led on pin 13");
+  Serial.println("pinctl (1/2)   control led on pin 13; usage pinctl 1 or pinctl 0 ");
   Serial.println();
   Serial.println("For feedback use Telegram(@dwarq7), Instagram(@ilya_quicksort) or melonssh.at.pc@gmail.com;");
 }
@@ -47,10 +48,16 @@ void fetchmsg(){
   Serial.println("Owner:" + Owner);
   Serial.println(AsciiArt);
 }
-void f_pinctl(){
+void f_pinctl(bool status){
   
-  ledstatus = !ledstatus;
+  ledstatus = status;
   digitalWrite(ledctl, ledstatus);
+}
+bool f_pinctlCheck(String fquery){
+  if (fquery == "pinctl 1"){return true;}
+  else if (fquery == "pinctl 0"){return false;}
+  else if (fquery == "pinctl"){Serial.println("Not enough args; try help;"); 
+}
 }
 void hollywood(){
   String hwq;
@@ -65,30 +72,26 @@ void hollywood(){
   }
 }
 
-/*
-bool permissionCheck(String fquery){
+
+bool permissionCheck(){
   String passwdToCheck;
   bool accept;
-  if (fquery == "reboot"){
     Serial.print("Password for"+Owner+": ");
     if(Serial.available() > 0){
     passwdToCheck = Serial.readString();
-    accept = passwdCheck(passwdToCheck);}
+    Serial.setTimeout(20000);
+    accept = passwdCheck(passwdToCheck);
+    }
     if(accept == true) return true;
     else return false;
-  }
-  }
+}
 
 bool passwdCheck(String passwd) {
   if (passwd == OwnerPasswd) return true;
   else {Serial.println("wrong password");return false;}
   } 
 
-void permissionRebootOutput(bool perm){
-  if (perm == true){
-    Serial.println("Rebooting...");
-    resetFunc();
-  }
+void exitRoot(String fquery){
+  if (asRoot == true && fquery == "exit"){asRoot == false;}
 }
-*/
 
